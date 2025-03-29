@@ -13,7 +13,7 @@ import { ConfigModule } from '@nestjs/config';
       type: 'postgres',
       url: process.env.DATABASE_URL, // Railway에서 제공하는 연결 문자열 사용
       entities: [Inquiry],
-      synchronize: false,
+      synchronize: true, // 일시적으로 true로 설정
       ssl:
         process.env.NODE_ENV === 'production'
           ? { rejectUnauthorized: false }
