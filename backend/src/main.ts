@@ -1,21 +1,28 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
+import * as fs from 'fs';
+import * as path from 'path';
 
 async function bootstrap() {
+  // uploads 디렉토리 생성 확인
+  const uploadsDir = path.join(__dirname, '..', 'uploads');
+  if (!fs.existsSync(uploadsDir)) {
+    fs.mkdirSync(uploadsDir, { recursive: true });
+  }
+
   const app = await NestFactory.create(AppModule);
 
-  // 특정 도메인 및 로컬 개발 환경 모두 허용하는 CORS 설정
+  // CORS 설정
   app.enableCors({
     origin: [
-      'https://frontend-production-0105.up.railway.app', // Railway에 배포된 프론트엔드 도메인
-      'http://localhost:3000', // 로컬 개발 환경
-      'https://*.up.railway.app', // Railway의 모든 하위 도메인 허용
+      'https://frontend-production-0105.up.railway.app',
+      'http://localhost:3000',
+      'https://*.up.railway.app',
     ],
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     credentials: true,
   });
 
-  // 환경 변수에서 포트를 가져오거나 기본값 4000 사용
   const port = process.env.PORT || 4000;
   await app.listen(port);
 
