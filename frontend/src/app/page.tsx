@@ -94,10 +94,8 @@ export default function InquiryForm() {
         formData.append("document", fileInputRef.current.files[0]);
       }
 
-      // API URL 결정 (환경에 따라 다른 URL 사용)
-      const apiBaseUrl =
-        process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
-      const apiUrl = `${apiBaseUrl}/inquiry`;
+      // 백엔드 URL 직접 하드코딩
+      const apiUrl = "https://backend-production-5534.up.railway.app/inquiry";
 
       // FormData 내용 확인
       for (const pair of formData.entries()) {
