@@ -7,17 +7,18 @@ import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({ isGlobal: true }), // ✅ .env 파일 로드
+    ConfigModule.forRoot({ isGlobal: true }),
 
     TypeOrmModule.forRoot({
       type: 'postgres',
-      host: 'db',
-      port: 5432,
-      username: 'postgres',
-      password: 'password',
-      database: 'washblanc',
+      url: process.env.DATABASE_URL, // Railway에서 제공하는 연결 문자열 사용
       entities: [Inquiry],
-      synchronize: true, // 개발환경에서만 true
+      synchronize: false,
+      ssl:
+        process.env.NODE_ENV === 'production'
+          ? { rejectUnauthorized: false }
+          : false,
+      autoLoadEntities: true,
     }),
 
     MailerModule.forRoot({

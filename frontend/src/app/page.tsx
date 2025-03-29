@@ -94,12 +94,17 @@ export default function InquiryForm() {
         formData.append("document", fileInputRef.current.files[0]);
       }
 
+      // API URL 결정 (환경에 따라 다른 URL 사용)
+      const apiBaseUrl =
+        process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
+      const apiUrl = `${apiBaseUrl}/inquiry`;
+
       // FormData 내용 확인
       for (const pair of formData.entries()) {
         console.log(`${pair[0]}:`, pair[1]);
       }
 
-      const response = await fetch("http://localhost:4000/inquiry", {
+      const response = await fetch(apiUrl, {
         method: "POST",
         body: formData,
       });
