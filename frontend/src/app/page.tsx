@@ -63,13 +63,20 @@ export default function InquiryForm() {
 
       const formData = new FormData();
 
-      // 가맹유형 - 체크된 항목만 추가
-      if (data.franchiseTypes.detailingShop)
-        formData.append("franchiseType[]", "detailingShop");
-      if (data.franchiseTypes.selfCarWash)
-        formData.append("franchiseType[]", "selfCarWash");
-      if (data.franchiseTypes.noBrush)
-        formData.append("franchiseType[]", "noBrush");
+      // 가맹유형 - 배열이 아닌 개별 필드로 전송
+      formData.append(
+        "detailingShop",
+        String(data.franchiseTypes.detailingShop)
+      );
+      formData.append("selfCarWash", String(data.franchiseTypes.selfCarWash));
+      formData.append("noBrush", String(data.franchiseTypes.noBrush));
+
+      // 선택된 가맹유형을 텍스트로도 추가
+      const selectedTypes = [];
+      if (data.franchiseTypes.detailingShop) selectedTypes.push("디테일링샵");
+      if (data.franchiseTypes.selfCarWash) selectedTypes.push("셀프세차장");
+      if (data.franchiseTypes.noBrush) selectedTypes.push("노브러쉬");
+      formData.append("franchiseTypesText", selectedTypes.join(", "));
 
       formData.append("name", data.name);
       formData.append("phone", data.phone);
@@ -110,93 +117,205 @@ export default function InquiryForm() {
     }
   };
 
+  // 인라인 스타일 정의
+  const styles: { [key: string]: React.CSSProperties } = {
+    container: {
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+      minHeight: "100vh",
+      backgroundColor: "#ffffff",
+    },
+    formContainer: {
+      backgroundColor: "#ffffff",
+      padding: "2rem",
+      width: "100%",
+      maxWidth: "32rem",
+    },
+    title: {
+      fontSize: "1.875rem",
+      fontWeight: "bold",
+      textAlign: "center",
+      marginBottom: "1.5rem",
+    },
+    formGroup: {
+      marginBottom: "1rem",
+    },
+    label: {
+      display: "block",
+      fontWeight: "500",
+      color: "#374151",
+      marginBottom: "0.5rem",
+    },
+    input: {
+      width: "100%",
+      border: "1px solid #d1d5db",
+      borderRadius: "0.5rem",
+      padding: "0.5rem 1rem",
+      outline: "none",
+    },
+    inputFocus: {
+      borderColor: "#3b82f6",
+      boxShadow: "0 0 0 3px rgba(59, 130, 246, 0.3)",
+    },
+    select: {
+      width: "100%",
+      border: "1px solid #d1d5db",
+      borderRadius: "0.5rem",
+      padding: "0.5rem 1rem",
+      outline: "none",
+    },
+    checkboxContainer: {
+      display: "flex",
+      alignItems: "center",
+      marginBottom: "0.5rem",
+    },
+    checkbox: {
+      height: "1rem",
+      width: "1rem",
+      marginRight: "0.5rem",
+    },
+    radioContainer: {
+      display: "flex",
+      gap: "1rem",
+    },
+    radioGroup: {
+      display: "flex",
+      alignItems: "center",
+    },
+    radio: {
+      height: "1rem",
+      width: "1rem",
+      marginRight: "0.5rem",
+    },
+    fileButton: {
+      display: "block",
+      width: "100%",
+      backgroundColor: "#e5e7eb",
+      color: "#374151",
+      textAlign: "center",
+      padding: "0.5rem 1rem",
+      borderRadius: "0.5rem",
+      marginTop: "0.25rem",
+      cursor: "pointer",
+    },
+    submitButton: {
+      width: "100%",
+      backgroundColor: "#3b82f6",
+      color: "#ffffff",
+      padding: "0.5rem 1rem",
+      borderRadius: "0.5rem",
+      fontWeight: "500",
+      border: "none",
+      cursor: "pointer",
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+    },
+    submitButtonDisabled: {
+      backgroundColor: "#9ca3af",
+      cursor: "not-allowed",
+    },
+    errorMessage: {
+      color: "#ef4444",
+      fontSize: "0.875rem",
+      marginTop: "0.25rem",
+    },
+    successMessage: {
+      marginTop: "1rem",
+      padding: "0.75rem",
+      backgroundColor: "#d1fae5",
+      color: "#047857",
+      textAlign: "center",
+      borderRadius: "0.5rem",
+    },
+    spinner: {
+      height: "1.25rem",
+      width: "1.25rem",
+      borderTop: "2px solid white",
+      borderRight: "2px solid transparent",
+      borderRadius: "50%",
+      animation: "spin 1s linear infinite",
+    },
+  };
+
   return (
-    <div className="flex justify-center items-center min-h-screen bg-white">
-      <div className="bg-white p-8 w-full max-w-lg">
-        <h1 className="text-3xl font-bold text-center mb-6">가맹점 문의</h1>
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+    <div style={styles.container}>
+      <div style={styles.formContainer}>
+        <h1 style={styles.title}>가맹점 문의</h1>
+        <form onSubmit={handleSubmit(onSubmit)}>
           {/* 가맹유형 (체크박스) */}
-          <div>
-            <label className="block font-medium text-gray-700 mb-2">
-              가맹유형 (중복선택 가능)
-            </label>
-            <div className="space-y-2">
-              <div className="flex items-center">
+          <div style={styles.formGroup}>
+            <label style={styles.label}>가맹유형 (중복선택 가능)</label>
+            <div>
+              <div style={styles.checkboxContainer}>
                 <input
                   type="checkbox"
                   id="detailingShop"
                   {...register("franchiseTypes.detailingShop")}
-                  className="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                  style={styles.checkbox}
                 />
-                <label htmlFor="detailingShop" className="ml-2 text-gray-700">
-                  디테일링샵
-                </label>
+                <label htmlFor="detailingShop">디테일링샵</label>
               </div>
-              <div className="flex items-center">
+              <div style={styles.checkboxContainer}>
                 <input
                   type="checkbox"
                   id="selfCarWash"
                   {...register("franchiseTypes.selfCarWash")}
-                  className="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                  style={styles.checkbox}
                 />
-                <label htmlFor="selfCarWash" className="ml-2 text-gray-700">
-                  셀프세차장
-                </label>
+                <label htmlFor="selfCarWash">셀프세차장</label>
               </div>
-              <div className="flex items-center">
+              <div style={styles.checkboxContainer}>
                 <input
                   type="checkbox"
                   id="noBrush"
                   {...register("franchiseTypes.noBrush")}
-                  className="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                  style={styles.checkbox}
                 />
-                <label htmlFor="noBrush" className="ml-2 text-gray-700">
-                  노브러쉬
-                </label>
+                <label htmlFor="noBrush">노브러쉬</label>
               </div>
             </div>
             {!anyFranchiseSelected && (
-              <p className="text-red-500 text-sm mt-1">
+              <p style={styles.errorMessage}>
                 가맹유형을 하나 이상 선택해주세요
               </p>
             )}
           </div>
 
           {/* 성함 입력 */}
-          <div>
-            <label className="block font-medium text-gray-700">성함</label>
+          <div style={styles.formGroup}>
+            <label style={styles.label}>성함</label>
             <input
               {...register("name", { required: "성함을 입력해주세요" })}
-              className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-400"
+              style={styles.input}
             />
             {errors.name && (
-              <p className="text-red-500 text-sm mt-1">{errors.name.message}</p>
+              <p style={styles.errorMessage}>{errors.name.message}</p>
             )}
           </div>
 
           {/* 연락처 입력 */}
-          <div>
-            <label className="block font-medium text-gray-700">연락처</label>
+          <div style={styles.formGroup}>
+            <label style={styles.label}>연락처</label>
             <input
               {...register("phone", { required: "연락처를 입력해주세요" })}
-              className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-400"
+              style={styles.input}
               placeholder="010-0000-0000"
             />
             {errors.phone && (
-              <p className="text-red-500 text-sm mt-1">
-                {errors.phone.message}
-              </p>
+              <p style={styles.errorMessage}>{errors.phone.message}</p>
             )}
           </div>
 
           {/* 희망지역 */}
-          <div>
-            <label className="block font-medium text-gray-700">희망지역</label>
+          <div style={styles.formGroup}>
+            <label style={styles.label}>희망지역</label>
             <select
               {...register("desiredLocation", {
                 required: "희망지역을 선택해주세요",
               })}
-              className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-400"
+              style={styles.select}
             >
               <option value="">희망지역 선택</option>
               <option value="서울">서울</option>
@@ -212,20 +331,20 @@ export default function InquiryForm() {
               <option value="제주">제주</option>
             </select>
             {errors.desiredLocation && (
-              <p className="text-red-500 text-sm mt-1">
+              <p style={styles.errorMessage}>
                 {errors.desiredLocation.message}
               </p>
             )}
           </div>
 
           {/* 유입경로 */}
-          <div>
-            <label className="block font-medium text-gray-700">유입경로</label>
+          <div style={styles.formGroup}>
+            <label style={styles.label}>유입경로</label>
             <select
               {...register("referralSource", {
                 required: "유입경로를 선택해주세요",
               })}
-              className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-400"
+              style={styles.select}
             >
               <option value="">유입경로 선택</option>
               <option value="지인추천">지인추천</option>
@@ -236,22 +355,18 @@ export default function InquiryForm() {
               <option value="기타">기타</option>
             </select>
             {errors.referralSource && (
-              <p className="text-red-500 text-sm mt-1">
-                {errors.referralSource.message}
-              </p>
+              <p style={styles.errorMessage}>{errors.referralSource.message}</p>
             )}
           </div>
 
           {/* 예상투자금 */}
-          <div>
-            <label className="block font-medium text-gray-700">
-              예상투자금
-            </label>
+          <div style={styles.formGroup}>
+            <label style={styles.label}>예상투자금</label>
             <select
               {...register("estimatedInvestment", {
                 required: "예상투자금을 선택해주세요",
               })}
-              className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-400"
+              style={styles.select}
             >
               <option value="">예상투자금 선택</option>
               <option value="1억 미만">1억 미만</option>
@@ -260,94 +375,77 @@ export default function InquiryForm() {
               <option value="미정">미정</option>
             </select>
             {errors.estimatedInvestment && (
-              <p className="text-red-500 text-sm mt-1">
+              <p style={styles.errorMessage}>
                 {errors.estimatedInvestment.message}
               </p>
             )}
           </div>
 
           {/* 세차장운영경험 */}
-          <div>
-            <label className="block font-medium text-gray-700 mb-2">
-              세차장운영경험
-            </label>
-            <div className="flex space-x-4">
-              <div className="flex items-center">
+          <div style={styles.formGroup}>
+            <label style={styles.label}>세차장운영경험</label>
+            <div style={styles.radioContainer}>
+              <div style={styles.radioGroup}>
                 <input
                   type="radio"
                   id="experience-yes"
                   value="true"
                   {...register("hasCarWashExperience")}
-                  className="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500"
+                  style={styles.radio}
                 />
-                <label htmlFor="experience-yes" className="ml-2 text-gray-700">
-                  있음
-                </label>
+                <label htmlFor="experience-yes">있음</label>
               </div>
-              <div className="flex items-center">
+              <div style={styles.radioGroup}>
                 <input
                   type="radio"
                   id="experience-no"
                   value="false"
                   {...register("hasCarWashExperience")}
-                  className="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500"
+                  style={styles.radio}
                 />
-                <label htmlFor="experience-no" className="ml-2 text-gray-700">
-                  없음
-                </label>
+                <label htmlFor="experience-no">없음</label>
               </div>
             </div>
           </div>
 
           {/* 토지소유여부 */}
-          <div>
-            <label className="block font-medium text-gray-700 mb-2">
-              토지소유여부
-            </label>
-            <div className="flex space-x-4">
-              <div className="flex items-center">
+          <div style={styles.formGroup}>
+            <label style={styles.label}>토지소유여부</label>
+            <div style={styles.radioContainer}>
+              <div style={styles.radioGroup}>
                 <input
                   type="radio"
                   id="land-yes"
                   value="true"
                   {...register("hasLandOwnership")}
-                  className="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500"
+                  style={styles.radio}
                 />
-                <label htmlFor="land-yes" className="ml-2 text-gray-700">
-                  있음
-                </label>
+                <label htmlFor="land-yes">있음</label>
               </div>
-              <div className="flex items-center">
+              <div style={styles.radioGroup}>
                 <input
                   type="radio"
                   id="land-no"
                   value="false"
                   {...register("hasLandOwnership")}
-                  className="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500"
+                  style={styles.radio}
                 />
-                <label htmlFor="land-no" className="ml-2 text-gray-700">
-                  없음
-                </label>
+                <label htmlFor="land-no">없음</label>
               </div>
             </div>
           </div>
 
           {/* 파일 업로드 */}
-          <div>
-            <label className="block font-medium text-gray-700">
-              기획서 첨부
-            </label>
+          <div style={styles.formGroup}>
+            <label style={styles.label}>기획서 첨부</label>
             <input
               type="file"
               ref={fileInputRef}
-              className="hidden"
+              style={{ display: "none" }}
               id="file-upload"
               onChange={handleFileChange}
             />
-            <label
-              htmlFor="file-upload"
-              className="cursor-pointer block bg-gray-200 text-gray-700 text-center py-2 px-4 rounded-lg mt-1 hover:bg-gray-300"
-            >
+            <label htmlFor="file-upload" style={styles.fileButton}>
               {fileName || "파일 선택하기"}
             </label>
           </div>
@@ -356,10 +454,20 @@ export default function InquiryForm() {
           <button
             type="submit"
             disabled={isSubmitting || !anyFranchiseSelected}
-            className="w-full bg-blue-500 text-white px-4 py-2 rounded-lg font-medium hover:bg-blue-600 disabled:bg-gray-400 flex items-center justify-center"
+            style={{
+              ...styles.submitButton,
+              ...(isSubmitting || !anyFranchiseSelected
+                ? styles.submitButtonDisabled
+                : {}),
+            }}
           >
             {isSubmitting ? (
-              <div className="animate-spin h-5 w-5 border-t-2 border-white border-solid rounded-full"></div>
+              <div
+                style={{
+                  ...styles.spinner,
+                  animation: "spin 1s linear infinite",
+                }}
+              ></div>
             ) : (
               "제출하기"
             )}
@@ -368,10 +476,20 @@ export default function InquiryForm() {
 
         {/* 응답 메시지 */}
         {responseMessage && (
-          <div className="mt-4 p-3 bg-green-100 text-green-700 text-center rounded-lg">
-            {responseMessage}
-          </div>
+          <div style={styles.successMessage}>{responseMessage}</div>
         )}
+
+        {/* 애니메이션을 위한 스타일 */}
+        <style jsx>{`
+          @keyframes spin {
+            0% {
+              transform: rotate(0deg);
+            }
+            100% {
+              transform: rotate(360deg);
+            }
+          }
+        `}</style>
       </div>
     </div>
   );
