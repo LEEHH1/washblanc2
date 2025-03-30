@@ -40,4 +40,10 @@ export class Inquiry {
 
   @CreateDateColumn()
   createdAt: Date;
+
+  @Column()
+  startupSchedule: string; // 창업예정일정
+
+  @Column({ nullable: true })
+  assetDetails: string; // 자본 및 부동산 보유내용 (선택)
 }

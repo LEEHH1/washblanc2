@@ -73,4 +73,11 @@ export class CreateInquiryDto {
 
   @IsOptional()
   document?: Express.Multer.File;
+
+  @IsString()
+  startupSchedule: string; // 창업예정일정
+
+  @IsString()
+  @IsOptional()
+  assetDetails?: string; // 자본 및 부동산 보유내용 (선택)
 }

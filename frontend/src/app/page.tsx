@@ -18,6 +18,8 @@ interface InquiryForm {
   estimatedInvestment: string;
   hasCarWashExperience: boolean;
   hasLandOwnership: boolean;
+  startupSchedule: string; // 창업예정일정
+  assetDetails: string; // 자본 및 부동산 보유내용 (선택)
 }
 
 export default function InquiryForm() {
@@ -94,6 +96,10 @@ export default function InquiryForm() {
         String(data.hasCarWashExperience)
       );
       formData.append("hasLandOwnership", String(data.hasLandOwnership));
+
+      // 새로 추가된 필드들
+      formData.append("startupSchedule", data.startupSchedule);
+      formData.append("assetDetails", data.assetDetails || ""); // 선택 필드이므로 빈 문자열 기본값
 
       // 파일 추가
       if (fileInputRef.current?.files?.[0]) {
@@ -517,7 +523,76 @@ export default function InquiryForm() {
               </p>
             )}
           </div>
+          {/* 창업예정일정 */}
+          <div style={{ marginBottom: "20px" }}>
+            <label
+              style={{
+                display: "block",
+                fontSize: "16px",
+                fontWeight: "bold",
+                marginBottom: "10px",
+              }}
+            >
+              창업예정일정
+            </label>
+            <input
+              {...register("startupSchedule", {
+                required: "창업예정일정을 입력해주세요",
+              })}
+              style={{
+                width: "100%",
+                padding: "12px 15px",
+                backgroundColor: "#FFFFFF",
+                border: "none",
+                borderRadius: "10px",
+                fontSize: "16px",
+                color: "#333333",
+                boxSizing: "border-box",
+              }}
+              placeholder="예: 2025년 상반기, 3개월 이내 등"
+            />
+            {errors.startupSchedule && (
+              <p
+                style={{
+                  color: "#FFD700",
+                  fontSize: "14px",
+                  marginTop: "5px",
+                }}
+              >
+                {errors.startupSchedule.message}
+              </p>
+            )}
+          </div>
 
+          {/* 자본 및 부동산 보유내용 (선택) */}
+          <div style={{ marginBottom: "20px" }}>
+            <label
+              style={{
+                display: "block",
+                fontSize: "16px",
+                fontWeight: "bold",
+                marginBottom: "10px",
+              }}
+            >
+              자본 및 부동산 보유내용 (선택)
+            </label>
+            <textarea
+              {...register("assetDetails")}
+              style={{
+                width: "100%",
+                padding: "12px 15px",
+                backgroundColor: "#FFFFFF",
+                border: "none",
+                borderRadius: "10px",
+                fontSize: "16px",
+                color: "#333333",
+                boxSizing: "border-box",
+                minHeight: "100px",
+                resize: "vertical",
+              }}
+              placeholder="보유하신 자본이나 부동산에 대한 상세 내용을 적어주세요 (선택사항)"
+            />
+          </div>
           {/* 세차장운영경험 */}
           <div style={{ marginBottom: "20px" }}>
             <label

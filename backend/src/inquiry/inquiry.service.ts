@@ -59,15 +59,17 @@ export class InquiryService {
         <p>희망지역: ${savedInquiry.desiredLocation}</p>
         <p>유입경로: ${savedInquiry.referralSource}</p>
         <p>예상투자금: ${savedInquiry.estimatedInvestment}</p>
+        <p>창업예정일정: ${savedInquiry.startupSchedule}</p>
         <p>세차장운영경험: ${savedInquiry.hasCarWashExperience ? '있음' : '없음'}</p>
         <p>토지소유여부: ${savedInquiry.hasLandOwnership ? '있음' : '없음'}</p>
+        ${savedInquiry.assetDetails ? `<p>자본 및 부동산 보유내용: ${savedInquiry.assetDetails}</p>` : ''}
         ${file ? `<p>첨부파일: ${file.originalname}</p>` : ''}
       `,
       attachments: file
         ? [
             {
-              filename: file.originalname, // 이메일에서 보일 파일명
-              path: file.path, // 서버에 저장된 파일 경로
+              filename: file.originalname,
+              path: file.path,
             },
           ]
         : [],
