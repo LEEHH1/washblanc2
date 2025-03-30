@@ -64,20 +64,25 @@ export default function InquiryForm() {
 
       const formData = new FormData();
 
-      // 가맹유형 - 배열이 아닌 개별 필드로 전송
-      formData.append(
-        "detailingShop",
-        String(data.franchiseTypes.detailingShop)
-      );
-      formData.append("selfCarWash", String(data.franchiseTypes.selfCarWash));
-      formData.append("noBrush", String(data.franchiseTypes.noBrush));
+      // 프랜차이즈 유형을 배열로 변환
+      const franchiseTypes = [];
+      if (data.franchiseTypes.detailingShop)
+        franchiseTypes.push("detailingShop");
+      if (data.franchiseTypes.selfCarWash) franchiseTypes.push("selfCarWash");
+      if (data.franchiseTypes.noBrush) franchiseTypes.push("noBrush");
 
-      // 선택된 가맹유형을 텍스트로도 추가
-      const selectedTypes = [];
-      if (data.franchiseTypes.detailingShop) selectedTypes.push("디테일링샵");
-      if (data.franchiseTypes.selfCarWash) selectedTypes.push("셀프세차장");
-      if (data.franchiseTypes.noBrush) selectedTypes.push("노브러쉬");
-      formData.append("franchiseTypesText", selectedTypes.join(", "));
+      // 배열의 각 항목을 동일한 이름으로 추가 (백엔드에서 배열로 인식)
+      franchiseTypes.forEach((type) => {
+        formData.append("franchiseTypes", type);
+      });
+
+      // 선택된 가맹유형을 텍스트로도 추가 (이메일용)
+      const selectedTypesText = [];
+      if (data.franchiseTypes.detailingShop)
+        selectedTypesText.push("디테일링샵");
+      if (data.franchiseTypes.selfCarWash) selectedTypesText.push("셀프세차장");
+      if (data.franchiseTypes.noBrush) selectedTypesText.push("노브러쉬");
+      formData.append("franchiseTypesText", selectedTypesText.join(", "));
 
       formData.append("name", data.name);
       formData.append("phone", data.phone);
@@ -95,7 +100,7 @@ export default function InquiryForm() {
         formData.append("document", fileInputRef.current.files[0]);
       }
 
-      // 백엔드 URL 직접 하드코딩
+      // 백엔드 URL
       const apiUrl = "https://backend-production-5534.up.railway.app/inquiry";
 
       const response = await fetch(apiUrl, {
@@ -159,16 +164,6 @@ export default function InquiryForm() {
           >
             가맹 문의하기
           </h2>
-          <p
-            style={{
-              fontSize: "16px",
-              lineHeight: "1.6",
-              marginBottom: "20px",
-            }}
-          >
-            워시블랑과 함께 성장하는 파트너가 되어보세요. 자동차 문화가 발전함에
-            따라 차량 관리의 중요성은 더욱 커지고 있습니다.
-          </p>
         </div>
 
         <form onSubmit={handleSubmit(onSubmit)}>
@@ -265,7 +260,7 @@ export default function InquiryForm() {
                   htmlFor="noBrush"
                   style={{ fontSize: "16px", color: "#333333" }}
                 >
-                  노브���쉬
+                  노브러쉬
                 </label>
               </div>
             </div>

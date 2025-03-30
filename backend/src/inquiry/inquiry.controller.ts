@@ -34,37 +34,15 @@ export class InquiryController {
   ) {
     console.log('Received DTO:', JSON.stringify(createInquiryDto));
 
-    // franchiseTypes가 undefined 또는 문자열이면 배열로 변환
+    // franchiseTypes 처리
     if (!createInquiryDto.franchiseTypes) {
       createInquiryDto.franchiseTypes = [];
-    } else if (typeof createInquiryDto.franchiseTypes === 'string') {
+    } else if (!Array.isArray(createInquiryDto.franchiseTypes)) {
+      // 배열이 아닌 경우 배열로 변환
       createInquiryDto.franchiseTypes = [createInquiryDto.franchiseTypes];
     }
 
-    // DTO가 객체인지 확인 후 타입 변환 진행
-    if (typeof createInquiryDto === 'object' && createInquiryDto !== null) {
-      if ('franchiseType[]' in createInquiryDto) {
-        const franchiseTypeValue = createInquiryDto['franchiseType[]'];
-
-        if (Array.isArray(franchiseTypeValue)) {
-          createInquiryDto.franchiseTypes = franchiseTypeValue.map((item) =>
-            typeof item === 'string' ? item : JSON.stringify(item),
-          );
-        } else if (typeof franchiseTypeValue === 'string') {
-          createInquiryDto.franchiseTypes = [franchiseTypeValue];
-        } else if (
-          franchiseTypeValue !== null &&
-          franchiseTypeValue !== undefined
-        ) {
-          createInquiryDto.franchiseTypes = [
-            JSON.stringify(franchiseTypeValue),
-          ];
-        }
-        delete createInquiryDto['franchiseType[]'];
-      }
-    }
-
-    // Boolean 값 처리 (폼 데이터에서 문자열로 올 수 있음)
+    // Boolean 값 처리
     createInquiryDto.hasCarWashExperience =
       String(createInquiryDto.hasCarWashExperience).toLowerCase() === 'true';
     createInquiryDto.hasLandOwnership =
