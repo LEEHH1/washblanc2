@@ -41,7 +41,7 @@ export class Inquiry {
   @CreateDateColumn()
   createdAt: Date;
 
-  @Column()
+  @Column({ nullable: true }) // 여기를 nullable: true로 변경
   startupSchedule: string; // 창업예정일정
 
   @Column({ nullable: true })
